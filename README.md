@@ -194,5 +194,5 @@ This tool will let you RNG abuse Great Marsh daily encounter in DPPt games
 
 ## Compiling
 ```
-g++ DPPtGreatMarshDailyEncounterRNGTool.cpp -o DPPtGreatMarshDailyEncounterRNGTool.exe -std=c++20 --static
+g++ DPPtGreatMarshDailyEncountersRNGTool.cpp -o DPPtGreatMarshDailyEncountersRNGTool.exe -std=c++20 --static
 ```
