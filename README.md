@@ -1,7 +1,7 @@
-# DPPtGreatMarshDailyEncounterRNGTool ![image](https://github.com/user-attachments/assets/2f909025-1905-4424-bf12-829d216e89f5)
+# DPPtGreatMarshDailyEncountersRNGTool ![image](https://github.com/user-attachments/assets/2f909025-1905-4424-bf12-829d216e89f5)
 
 
-This tool will let you RNG abuse Great Marsh daily encounter in DPPt games
+This tool will let you RNG abuse Great Marsh daily encounters in DPPt games
 
 ## Great Marsh encounter tables
 <table>
