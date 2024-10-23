@@ -42,29 +42,29 @@ bool sanitizeYesNoInput(const string output) {
     return toupper(yesNoAnswer[0]) == 'Y';
 }
 
-void printTableEncounterIndexes(const short index) {
-    static constexpr array<string_view, DP_PRE_DEX> greatMarshEncounterDPPreNationalDex{
+void printEncounters(const short index) {
+    static constexpr array<string_view, DP_PRE_DEX> greatMarshEncountersDPPreNationalDex{
         "Golduck", "Marill", "Wooper", "Quagsire", "Azurill", "Roselia", "Staravia", "Bidoof", "Bibarel", "Skorupi", "Croagunk",
         "Carnivine" };
 
-    static constexpr array<string_view, DP_POST_DEX> greatMarshEncounterDPPostNationalDex{
+    static constexpr array<string_view, DP_POST_DEX> greatMarshEncountersDPPostNationalDex{
         "Paras", "Golduck", "Exeggcute", "Kangaskhan", "Yanma", "Shroomish", "Roselia", "Gulpin", "Staravia", "Skorupi", "Drapion",
         "Croagunk", "Toxicroak", "Carnivine" };
 
-    static constexpr array<string_view, Pt_PRE_DEX> greatMarshEncounterPtPreNationalDex{
+    static constexpr array<string_view, Pt_PRE_DEX> greatMarshEncountersPtPreNationalDex{
         "Tangela", "Yanma", "Wooper", "Quagsire", "Tropius", "Skorupi", "Croagunk", "Carnivine" };
 
-    static constexpr array<string_view, Pt_POST_DEX> greatMarshEncounterPtPostNationalDex{
+    static constexpr array<string_view, Pt_POST_DEX> greatMarshEncountersPtPostNationalDex{
         "Paras", "Exeggcute", "Tangela", "Kangaskhan", "Yanma", "Quagsire", "Shroomish", "Gulpin", "Kecleon", "Tropius", "Skorupi",
         "Drapion", "Croagunk", "Toxicroak", "Carnivine" };
 
-    static constexpr array<const string_view*, 4> pokemonNameTables{ greatMarshEncounterDPPreNationalDex.data(), greatMarshEncounterDPPostNationalDex.data(),
-                                                                     greatMarshEncounterPtPreNationalDex.data(), greatMarshEncounterPtPostNationalDex.data() };
+    static constexpr array<const string_view*, 4> pokemonNames{ greatMarshEncountersDPPreNationalDex.data(), greatMarshEncountersDPPostNationalDex.data(),
+                                                                greatMarshEncountersPtPreNationalDex.data(), greatMarshEncountersPtPostNationalDex.data() };
 
     cout << "\n\nSwarm encounters:\n\n";
 
     for (short i = 0; i < greatMarshEncountersLimit[index]; i++) {
-        cout << i + 1 << " " << pokemonNameTables[index][i] << "\n";
+        cout << i + 1 << " " << pokemonNames[index][i] << "\n";
     }
 
     cout << "\n\n";
@@ -76,6 +76,10 @@ void sanitizeInput(const string output, T &value, const T lowLimit, const T high
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
+}
+
+uint8_t getAreaDailyEncounterIndex(const uint32_t seed, const short areaID) {
+    return (seed >> (5 * areaID)) & 0x1F;
 }
 
 void printAreaEnocunters(short* encounterSpecies, const short index, const uint32_t seed) {
@@ -106,14 +110,14 @@ void printAreaEnocunters(short* encounterSpecies, const short index, const uint3
                                                                         greatMarshEncounterPtPreNationalDexTable.data(), greatMarshEncounterPtPostNationalDexTable.data() };
     cout << "\n\n";
 
-    for (short i = 0; i < 6; i++) {
-        if (encounterSpecies[i]) {
-            cout << "Area " << i + 1 << " - " << pokemonDexNamesTable[index][(seed >> (5 * i)) & 0x1F] << "\n";
+    for (short areaID = 0; areaID < 6; areaID++) {
+        if (encounterSpecies[areaID]) {
+            cout << "Area " << areaID + 1 << " - " << pokemonDexNamesTable[index][getAreaDailyEncounterIndex(seed, areaID)] << "\n";
         }
     }
 }
 
-bool isWantedEncounterCheck(const uint32_t seed, short* wantedEncountersDex, const short wantedEncountersDexNumber, const short index) {
+bool isWantedEncounterCheck(const uint32_t seed, short* encounterDexIndexes, const short encounterDexIndexesNumber, const short index) {
     short encounterSpecies[6] = {0, 0, 0, 0, 0, 0};
 
     static constexpr array<short, MAX_GREAT_MARSH> greatMarshEncounteDPPreNationalDexIndexTable{
@@ -135,12 +139,12 @@ bool isWantedEncounterCheck(const uint32_t seed, short* wantedEncountersDex, con
     static constexpr array<const short*, 4> pokemonDexNumbersTable{ greatMarshEncounteDPPreNationalDexIndexTable.data(), greatMarshEncounterDPPostNationalDexIndexTable.data(),
                                                                     greatMarshEncounterPtPreNationalDexIndexTable.data(), greatMarshEncounterPtPostNationalDexIndexTable.data() };
 
-    for (short i = 0; i < wantedEncountersDexNumber; i++) {
+    for (short i = 0; i < encounterDexIndexesNumber; i++) {
         bool foundFlag = false;
 
-        for (short j = 0; j < 6; j++) {
-            if (!encounterSpecies[j] && pokemonDexNumbersTable[index][(seed >> (5 * j)) & 0x1F] == wantedEncountersDex[i]) {
-                encounterSpecies[j] = wantedEncountersDex[i];
+        for (short areaID = 0; areaID < 6; areaID++) {
+            if (!encounterSpecies[areaID] && pokemonDexNumbersTable[index][getAreaDailyEncounterIndex(seed, areaID)] == encounterDexIndexes[i]) {
+                encounterSpecies[areaID] = encounterDexIndexes[i];
                 foundFlag = true;
                 break;
             }
@@ -157,11 +161,11 @@ bool isWantedEncounterCheck(const uint32_t seed, short* wantedEncountersDex, con
 }
 
 void findEncounterSeed(const short index) {
-    short encountersNumber, encounter, minDelay, hour, minMTAdvances;
+    short wantedEncountersNumber, encounter, minDelay, hour, minMTAdvances;
     const short maxDelay = 10000;
 
-    sanitizeInput<short>("Insert how many encounters you are looking for (1-6): ", encountersNumber, 1, 6);
-    short *encountersDex = new short[encountersNumber];
+    sanitizeInput<short>("Insert how many encounters you are looking for (1-6): ", wantedEncountersNumber, 1, 6);
+    short *wantedEncounterDexIndexes = new short[wantedEncountersNumber];
 
     static constexpr array<short, DP_PRE_DEX> greatMarshEncounteDPPreNationalDexNumbers{
         55, 183, 194, 195, 298, 315, 397, 399, 400, 451, 453, 455 };
@@ -178,9 +182,9 @@ void findEncounterSeed(const short index) {
     static constexpr array<const short*, 4> pokemonDexNumbers{ greatMarshEncounteDPPreNationalDexNumbers.data(), greatMarshEncounteDPPostNationalDexNumbers.data(),
                                                                greatMarshEncountePtPreNationalDexNumbers.data(), greatMarshEncountePtPostNationalDexNumbers.data() };
 
-    for (short i = 0; i < encountersNumber; i++) {
+    for (short i = 0; i < wantedEncountersNumber; i++) {
         sanitizeInput<short>("Insert the wanted encounter index number " + to_string(i + 1) + ": ", encounter, 1, greatMarshEncountersLimit[index]);
-        encountersDex[i] = pokemonDexNumbers[index][encounter - 1];
+        wantedEncounterDexIndexes[i] = pokemonDexNumbers[index][encounter - 1];
     }
 
     sanitizeInput<short>("Insert the min delay: ", minDelay, 600, 9999);
@@ -194,7 +198,7 @@ void findEncounterSeed(const short index) {
                 mt MT(seed);
                 lcrng LCRNG(MT.advance(minMTAdvances));
 
-                if (isWantedEncounterCheck(LCRNG.next(2), encountersDex, encountersNumber, index)) {
+                if (isWantedEncounterCheck(LCRNG.next(2), wantedEncounterDexIndexes, wantedEncountersNumber, index)) {
                     printf("\nTarget seed: %08X\n\n------------------------------------------------\n\n", seed);
                     return;
                 }
@@ -209,7 +213,7 @@ int main() {
     while (true) {
         const short game = sanitizeGameVersionInput(), dexFlag = sanitizeYesNoInput("Did you obtain the National Pokédex? (y/n) ") ? game + 1 : game;
         const short tableIndex = game + dexFlag;
-        printTableEncounterIndexes(tableIndex);
+        printEncounters(tableIndex);
         findEncounterSeed(tableIndex);
     }
 }
