@@ -211,7 +211,7 @@ void findEncounterSeed(const short index) {
 
 int main() {
     while (true) {
-        const short game = sanitizeGameVersionInput(), dexFlag = sanitizeYesNoInput("Did you obtain the National Pokédex? (y/n) ") ? game + 1 : game;
+        const short game = sanitizeGameVersionInput(), dexFlag = sanitizeYesNoInput("Did you obtain the National Pokedex? (y/n) ") ? game + 1 : game;
         const short tableIndex = game + dexFlag;
         printEncounters(tableIndex);
         findEncounterSeed(tableIndex);
