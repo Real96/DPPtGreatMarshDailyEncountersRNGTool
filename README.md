@@ -188,7 +188,7 @@ This tool will let you RNG abuse Great Marsh daily encounters in DPPt games
 1) Search an Initial Seed for the desired Great Marsh encounters
 2) Hit that Initial Seed
 3) Make the needed MT advances if necessary (in DPPt everytime you flip the coin or make a new group talking to the group NPC, it is equal to an advancement)
-4) Talk to the group NPC and make a new group (in DPPt it is standing in `Jubilife City` in front of the `Jubilife TV Station`)
+4) Talk to the group NPC and make a new group (in DPPt it is standing in `Jubilife City`, in front of the `Jubilife TV Station`)
 5) Save the game and wait for the DS clock to pass midnight
 6) Go in `Great Marsh` and check the encounter in the Areas showed by the tool
 
